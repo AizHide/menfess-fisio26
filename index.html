@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MENFESS NGL · S1 FISIOTERAPI 26</title>
+<style>
+:root{--ink:#203a4d;--blue:#315b78;--paper:#fffaf0;--accent:#e8a9a9}
+*{box-sizing:border-box}body{margin:0;font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#e9eef0 url('/assets/template.jpg') center/cover fixed no-repeat;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;background:#f6f3ebbb;z-index:-1}
+main{width:min(680px,92vw);margin:24px auto;padding:24px 20px 36px;background:#fffaf0ed;border:1px solid #d6d0c4;box-shadow:0 10px 36px #243a4d24;border-radius:18px}
+h1{text-align:center;letter-spacing:.12em;font-size:clamp(22px,5vw,34px);margin:4px 0 8px} .sub{text-align:center;letter-spacing:.14em;font-size:12px;margin:0 0 24px}
+.screen{display:none}.screen.active{display:block}.intro{text-align:center;line-height:1.6;margin:0 auto 22px;max-width:440px}
+button,.btn{border:0;border-radius:999px;background:var(--blue);color:white;padding:12px 22px;font-weight:bold;cursor:pointer;font-size:14px}button:disabled{opacity:.6;cursor:wait}.center{text-align:center}
+label{display:block;font-size:12px;letter-spacing:.12em;font-weight:bold;margin:16px 0 7px}
+input,textarea,select{font:inherit;color:var(--ink);width:100%;border:1px solid #c7d1d5;border-radius:10px;padding:12px;background:#fffdf8;outline-color:#7198b2}
+textarea{min-height:125px;resize:vertical;line-height:1.45} .count{text-align:right;font:12px Arial,sans-serif;margin-top:5px}
+.err{color:#a32638;font:13px Arial,sans-serif;margin:10px 0;white-space:pre-wrap}.muted{font:12px Arial,sans-serif;color:#61717a}.success-mark{font-size:52px;text-align:center;margin:18px 0 6px}.success h2{text-align:center}.success p{text-align:center;line-height:1.6}
+.top-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.secondary{background:#e6edf0;color:var(--ink)}.msg{background:white;border:1px solid #d7e0e3;border-radius:12px;padding:14px;margin:12px 0;overflow-wrap:anywhere}.msg p{white-space:pre-wrap;line-height:1.5}.msg small{color:#657780}
+hr{border:0;border-top:1px solid #d8d6ce;margin:20px 0}
+@media(max-width:480px){main{padding:20px 15px;margin:12px auto}h1{letter-spacing:.07em}.sub{font-size:10px}}
+</style></head>
+<body><main>
+<h1>MENFESS NGL</h1><p class="sub">S1 FISIOTERAPI · ANGKATAN 26</p>
+<section id="home" class="screen active"><p class="intro">Punya pesan buat teman-teman Fisioterapi 26? Kirim surat anonim atau tulis siapa pengirimnya. 💌</p><div class="center"><button id="goForm">TULIS MENFESS 💌</button> <button class="secondary" id="openAdmin">ADMIN</button></div></section>
+<section id="formScreen" class="screen"><form id="messageForm">
+<label for="to">TO / KEPADA</label><input id="to" name="to" maxlength="80" placeholder="Untuk siapa?" required>
+<label for="from">FROM / DARI</label><input id="from" name="from" maxlength="80" placeholder="Anonim atau namamu">
+<label for="message">MESSAGE / PESAN</label><textarea id="message" name="message" maxlength="160" placeholder="Tulis pesanmu di sini..." required></textarea><div class="count" id="count">0/160</div>
+<label for="song">SONG / LAGU (opsional)</label><input id="song" name="song" maxlength="120" placeholder="Judul lagu — penyanyi">
+<div id="submitError" class="err"></div><div class="top-actions"><button type="button" class="secondary" id="formBack">KEMBALI</button><button id="submitBtn" type="submit">KIRIM SURAT 💌</button></div>
+</form></section>
+<section id="success" class="screen success"><div class="success-mark">💌</div><h2>Terima kasih sudah mengirim pesan!</h2><p>Pesanmu sudah berhasil dikirim. Semoga pesan kecil ini membawa senyum. 🤍</p><div class="top-actions"><button id="sendAnother">KIRIM LAGI</button><button class="secondary" id="successHome">KEMBALI KE BERANDA</button></div></section>
+<section id="adminLogin" class="screen"><h2 class="center">ADMIN LOGIN</h2><p class="intro">Khusus admin S1 Fisioterapi 26.</p>
+<label for="adminName">NAMA ADMIN</label><select id="adminName"><option>Daffa</option><option>Asna</option><option>Celo</option><option>Shelo</option><option>Jonathan</option></select>
+<label for="adminPassword">PASSWORD</label><input type="password" id="adminPassword" placeholder="Masukkan sandi" autocomplete="current-password">
+<div id="loginError" class="err"></div><div class="top-actions"><button class="secondary" id="adminBack">KEMBALI</button><button id="loginBtn">MASUK</button></div></section>
+<section id="adminDashboard" class="screen"><h2>INBOX MENFESS</h2><p id="adminWelcome" class="muted"></p><div class="top-actions"><button id="refreshInbox">MUAT ULANG</button><button class="secondary" id="logoutAdmin">KELUAR</button></div><hr><div id="inboxList"></div></section>
+</main>
+<script>
+const ids=['home','formScreen','success','adminLogin','adminDashboard'];
+function show(id){ids.forEach(x=>document.getElementById(x).classList.toggle('active',x===id));window.scrollTo({top:0,behavior:'smooth'})}
+document.getElementById('goForm').onclick=()=>show('formScreen');
+document.getElementById('formBack').onclick=()=>show('home');
+document.getElementById('successHome').onclick=()=>show('home');
+document.getElementById('sendAnother').onclick=()=>show('formScreen');
+document.getElementById('openAdmin').onclick=()=>{document.getElementById('loginError').textContent='';document.getElementById('adminPassword').value='';show('adminLogin')};
+document.getElementById('adminBack').onclick=()=>show('home');
+const msg=document.getElementById('message'),count=document.getElementById('count');
+function updateCount(){const n=Array.from(msg.value).length;count.textContent=n+'/160';count.style.color=n>=150?'#a32638':'#61717a';msg.style.fontSize=(n<=35?16:n<=65?14:n<=100?12.5:11)+'px'}
+msg.addEventListener('input',updateCount);
+document.getElementById('messageForm').addEventListener('submit',async e=>{
+ e.preventDefault();const btn=document.getElementById('submitBtn'),err=document.getElementById('submitError');btn.disabled=true;btn.textContent='MENGIRIM...';err.textContent='';
+ const f=new FormData(e.currentTarget);const payload={to:f.get('to'),from:f.get('from'),message:f.get('message'),song:f.get('song')};
+ try{const r=await fetch('/.netlify/functions/submit-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let o={};try{o=await r.json()}catch{}if(!r.ok)throw new Error(o.error||'Pesan belum berhasil disimpan.');e.currentTarget.reset();updateCount();show('success')}
+ catch(ex){err.textContent='Pesan belum terkirim. Backend/database mungkin belum disetel. '+ex.message}
+ finally{btn.disabled=false;btn.textContent='KIRIM SURAT 💌'}
+});
+document.getElementById('loginBtn').onclick=async()=>{
+ const name=document.getElementById('adminName').value,password=document.getElementById('adminPassword').value,err=document.getElementById('loginError');err.textContent='Memeriksa login...';
+ try{const r=await fetch('/.netlify/functions/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,password})});const o=await r.json();if(!r.ok)throw new Error(o.error||'Login gagal');sessionStorage.setItem('menfessAdminToken',o.token);document.getElementById('adminWelcome').textContent='Login sebagai '+name+' · S1 Fisioterapi 26';err.textContent='';await loadInbox();show('adminDashboard')}
+ catch(e){err.textContent=e.message}
+};
+document.getElementById('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()});
+async function loadInbox(){const box=document.getElementById('inboxList');box.textContent='Memuat pesan...';try{const r=await fetch('/.netlify/functions/admin-messages',{headers:{Authorization:'Bearer '+sessionStorage.getItem('menfessAdminToken')}});const o=await r.json();if(!r.ok)throw new Error(o.error||'Gagal memuat inbox');box.replaceChildren();if(!o.messages?.length){box.textContent='Belum ada pesan masuk 💌';return}o.messages.forEach(m=>{const c=document.createElement('article');c.className='msg';const h=document.createElement('strong');h.textContent='Kepada: '+(m.to||'-');c.appendChild(h);[['From',m.from||'Anonim'],['Pesan',m.message||''],['Lagu',m.song||'—']].forEach(([k,v])=>{const p=document.createElement('p');p.textContent=k+': '+v;c.appendChild(p)});const sm=document.createElement('small');sm.textContent=m.created_at?new Date(m.created_at).toLocaleString('id-ID'):'';c.appendChild(sm);box.appendChild(c)})}catch(e){box.textContent='Inbox belum tersedia: '+e.message}}
+document.getElementById('refreshInbox').onclick=loadInbox;
+document.getElementById('logoutAdmin').onclick=()=>{sessionStorage.removeItem('menfessAdminToken');show('home')};
+</script></body></html>
